@@ -36,6 +36,9 @@ pub struct TwitterCredentials {
 
 impl TwitterCredentials {
     pub fn new(access_token: String, refresh_token: Option<String>) -> TwitterCredentials {
-        TwitterCredentials { access_token, refresh_token }
+        TwitterCredentials {
+            access_token,
+            refresh_token,
+        }
     }
 }

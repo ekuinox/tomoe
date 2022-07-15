@@ -48,7 +48,7 @@ impl TwitterOAuth2Authorizer {
         client: &TwitterOAuth2Client,
         redirect_url: &str,
     ) -> Result<StandardTokenResponse<EmptyExtraTokenFields, BasicTokenType>> {
-        let redirect_url = Url::parse(&redirect_url)?;
+        let redirect_url = Url::parse(redirect_url)?;
         let params = redirect_url.query_pairs().collect::<HashMap<_, _>>();
         let code = match params.get("code") {
             Some(code) => AuthorizationCode::new(code.to_string()),
@@ -97,7 +97,7 @@ impl TwitterOAuth2Client {
 
     /// create authorizer instance
     pub fn authorizer(&self, scopes: Vec<Scope>) -> TwitterOAuth2Authorizer {
-        TwitterOAuth2Authorizer::new(&self, scopes)
+        TwitterOAuth2Authorizer::new(self, scopes)
     }
 
     /// request token by redirect url
@@ -106,6 +106,6 @@ impl TwitterOAuth2Client {
         authorizer: TwitterOAuth2Authorizer,
         redirect_url: &str,
     ) -> Result<StandardTokenResponse<EmptyExtraTokenFields, BasicTokenType>> {
-        authorizer.try_into_token_with_redirect_url(&self, redirect_url)
+        authorizer.try_into_token_with_redirect_url(self, redirect_url)
     }
 }

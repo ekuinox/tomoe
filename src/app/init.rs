@@ -64,7 +64,7 @@ impl InitSubcommand {
                 .create_new(true)
                 .write(true)
                 .open(export_to)?;
-            let _ = export_to.write_all(exports.as_bytes())?;
+            export_to.write_all(exports.as_bytes())?;
         }
 
         Ok(())
@@ -89,7 +89,7 @@ impl FromStr for Scopes {
 
 impl Display for Scopes {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let _ = f.write_str(
+        f.write_str(
             &self
                 .iter()
                 .map(|s| s.as_ref())
@@ -122,7 +122,7 @@ impl Default for Scopes {
             "follows.read",
         ];
         let scopes = DEFAULT_SCOPES
-            .into_iter()
+            .iter()
             .map(ToString::to_string)
             .map(Scope::new)
             .collect();
