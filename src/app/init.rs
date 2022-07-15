@@ -3,7 +3,14 @@ use crate::twitter::{Scope, TwitterOAuth2Client};
 use anyhow::Result;
 use clap::Parser;
 use oauth2::TokenResponse;
-use std::{fmt::Display, io::{self, Write}, ops::Deref, path::PathBuf, str::FromStr, fs::OpenOptions};
+use std::{
+    fmt::Display,
+    fs::OpenOptions,
+    io::{self, Write},
+    ops::Deref,
+    path::PathBuf,
+    str::FromStr,
+};
 
 /// init authorization get refresh token
 #[derive(Parser, Debug)]
@@ -25,7 +32,7 @@ pub struct InitSubcommand {
     verbose: usize,
     /// env key to export access_token
     #[clap(short = 'e', long)]
-    export_to: PathBuf,
+    export_to: Option<PathBuf>,
 }
 
 impl InitSubcommand {
@@ -52,9 +59,14 @@ impl InitSubcommand {
         if self.verbose >= 1 {
             println!("{exports}");
         }
-        let mut export_to = OpenOptions::new().create_new(true).write(true).open(&self.export_to)?;
-        let _ = export_to.write_all(exports.as_bytes())?;
-        
+        if let Some(export_to) = &self.export_to {
+            let mut export_to = OpenOptions::new()
+                .create_new(true)
+                .write(true)
+                .open(export_to)?;
+            let _ = export_to.write_all(exports.as_bytes())?;
+        }
+
         Ok(())
     }
 }
