@@ -59,7 +59,7 @@ impl RefreshSubcommand {
             }
         };
         let json = serde_json::to_string(&credentials)?;
-        let _ = f.write_all(json.as_bytes())?;
+        f.write_all(json.as_bytes())?;
 
         Ok(())
     }
