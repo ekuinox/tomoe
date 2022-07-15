@@ -9,6 +9,7 @@ use std::{
     path::PathBuf,
 };
 
+/// refresh twitter access token by refresh token
 #[derive(Parser, Debug)]
 pub struct RefreshSubcommand {
     /// path to credentials
