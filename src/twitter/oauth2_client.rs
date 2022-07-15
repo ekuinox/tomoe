@@ -4,7 +4,8 @@ use oauth2::{
     basic::{BasicClient, BasicTokenType},
     reqwest::http_client,
     AuthUrl, AuthorizationCode, ClientId, ClientSecret, CsrfToken, EmptyExtraTokenFields,
-    PkceCodeChallenge, PkceCodeVerifier, RedirectUrl, StandardTokenResponse, TokenUrl,
+    PkceCodeChallenge, PkceCodeVerifier, RedirectUrl, RefreshToken, StandardTokenResponse,
+    TokenUrl,
 };
 use reqwest::Url;
 use std::{collections::HashMap, ops::Deref};
@@ -107,5 +108,17 @@ impl TwitterOAuth2Client {
         redirect_url: &str,
     ) -> Result<StandardTokenResponse<EmptyExtraTokenFields, BasicTokenType>> {
         authorizer.try_into_token_with_redirect_url(self, redirect_url)
+    }
+
+    /// request new token
+    pub fn refresh_token(
+        &self,
+        refresh_token: String,
+    ) -> Result<StandardTokenResponse<EmptyExtraTokenFields, BasicTokenType>> {
+        let refresh_token = RefreshToken::new(refresh_token);
+        let token = self
+            .exchange_refresh_token(&refresh_token)
+            .request(http_client)?;
+        Ok(token)
     }
 }
