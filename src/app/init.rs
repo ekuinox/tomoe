@@ -40,8 +40,11 @@ impl InitSubcommand {
         if self.verbose >= 2 {
             dbg!(&self);
         }
-        let client =
-            TwitterOAuth2Client::new(self.client_id, self.client_secret, self.callback_url)?;
+        let client = TwitterOAuth2Client::new_with_callback_url(
+            self.client_id,
+            self.client_secret,
+            self.callback_url,
+        )?;
         let authorizer = client.authorizer(self.scopes.into());
         println!("authorize_url: {}", authorizer.authorize_url());
         println!("enter redirected_url: ");
@@ -61,7 +64,8 @@ impl InitSubcommand {
         }
         if let Some(export_to) = &self.export_to {
             let mut export_to = OpenOptions::new()
-                .create_new(true)
+                .create(true)
+                .truncate(true)
                 .write(true)
                 .open(export_to)?;
             export_to.write_all(exports.as_bytes())?;

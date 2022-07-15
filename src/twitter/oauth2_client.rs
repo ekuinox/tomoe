@@ -80,19 +80,25 @@ impl Deref for TwitterOAuth2Client {
 }
 
 impl TwitterOAuth2Client {
-    /// create client
-    pub fn new(
+    /// create client with callback url
+    pub fn new_with_callback_url(
         client_id: String,
         client_secret: String,
         callback_url: String,
     ) -> Result<TwitterOAuth2Client> {
+        let TwitterOAuth2Client { inner: client } = Self::new(client_id, client_secret)?;
+        let redirect_url = RedirectUrl::new(callback_url)?;
+        let client = client.set_redirect_uri(redirect_url);
+        Ok(TwitterOAuth2Client { inner: client })
+    }
+
+    /// create client with callback url
+    pub fn new(client_id: String, client_secret: String) -> Result<TwitterOAuth2Client> {
         let client_id = ClientId::new(client_id);
         let client_secret = ClientSecret::new(client_secret);
         let auth_url = AuthUrl::new(TWITTER_AUTHORIZE_URL.to_owned())?;
         let token_url = TokenUrl::new(TWITTER_TOKEN_URL.to_owned())?;
-        let redirect_url = RedirectUrl::new(callback_url)?;
         let client = BasicClient::new(client_id, client_secret.into(), auth_url, token_url.into());
-        let client = client.set_redirect_uri(redirect_url);
         Ok(TwitterOAuth2Client { inner: client })
     }
 

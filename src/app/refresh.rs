@@ -42,11 +42,7 @@ impl RefreshSubcommand {
             dbg!(&refresh_token);
         }
 
-        let client = TwitterOAuth2Client::new(
-            self.client_id,
-            self.client_secret,
-            "http://localhost:3000/callback".into(),
-        )?;
+        let client = TwitterOAuth2Client::new(self.client_id, self.client_secret)?;
         let mut f = OpenOptions::new()
             .truncate(true)
             .write(true)
